@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta de Desarrollo — ECOMEK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-dark: #1c1c1c;
+  --brand-blue: #4a8ec2;
+  --brand-blue-deep: #2e6a9e;
+  --brand-blue-light: #e8f1f8;
+  --brand-accent: #e8611a;
+  --brand-accent-dark: #c44f10;
+  --bg-page: #f4f6f8;
+  --bg-card: #ffffff;
+  --bg-soft: #eef1f5;
+  --bg-sidebar: #e4e8ee;
+  --border: #d2d8e2;
+  --border-soft: #e4e8ee;
+  --text-main: #1a2233;
+  --text-muted: #6b7280;
+  --text-soft: #8a93a5;
+  --font-ui: 'Montserrat', -apple-system, sans-serif;
+  --font-body: 'Nunito', -apple-system, sans-serif;
+  --font-data: 'Inter', -apple-system, sans-serif;
+  --green: #16a34a;
+  --green-bg: #f0fdf4;
+  --red: #dc2626;
+  --red-bg: #fef2f2;
+  --yellow: #d97706;
+  --yellow-bg: #fffbeb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: var(--font-body); color: var(--text-main); background: var(--bg-page); }
+
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  background: white; border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.topbar-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; gap: 18px;
+  padding: 14px 24px;
+}
+.topbar .logo-img { height: 32px; width: auto; }
+.topbar h1 { font-family: var(--font-ui); font-size: 14px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.2px; }
+.topbar .topbar-sep { width: 1px; height: 24px; background: var(--border); }
+.topbar .topbar-meta { margin-left: auto; font-family: var(--font-ui); font-size: 12px; color: var(--text-muted); font-weight: 500; }
+
+.tabs-nav { background: white; border-bottom: 1px solid var(--border); position: sticky; top: 58px; z-index: 99; }
+.tabs-inner { max-width: 1280px; margin: 0 auto; display: flex; gap: 4px; padding: 0 24px; overflow-x: auto; }
+.tab-btn {
+  font-family: var(--font-ui); font-weight: 600; font-size: 13px;
+  background: none; border: none; cursor: pointer;
+  padding: 14px 16px; color: var(--text-muted);
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap; display: flex; align-items: center; gap: 8px;
+}
+.tab-btn:hover { color: var(--brand-blue-deep); }
+.tab-btn.active { color: var(--brand-blue-deep); border-bottom-color: var(--brand-accent); }
+.tab-btn .tab-tag {
+  background: var(--bg-soft); color: var(--brand-blue-deep);
+  font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 700;
+}
+.tab-btn.active .tab-tag { background: var(--brand-accent); color: white; }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.content { max-width: 920px; margin: 0 auto; padding: 36px 32px 80px; }
+
+.hero {
+  border-radius: 14px; padding: 28px 32px; margin-bottom: 36px;
+  color: white; display: flex; flex-direction: column; gap: 8px;
+}
+.hero.dark { background: linear-gradient(135deg, #1c1c1c 0%, #2a3040 100%); }
+.hero.blue { background: linear-gradient(135deg, var(--brand-blue-deep) 0%, var(--brand-blue) 100%); }
+.hero.accent { background: linear-gradient(135deg, var(--brand-accent-dark) 0%, var(--brand-accent) 100%); }
+.hero.green { background: linear-gradient(135deg, #0f7a35 0%, var(--green) 100%); }
+.hero .ph-tag {
+  font-family: var(--font-ui); font-size: 11px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  background: rgba(255,255,255,0.18); padding: 4px 10px; border-radius: 4px;
+  align-self: flex-start;
+}
+.hero h1 { font-family: var(--font-ui); font-size: 24px; font-weight: 700; line-height: 1.3; }
+.hero .ph-sub { font-size: 14px; max-width: 700px; line-height: 1.65; color: rgba(255,255,255,0.9); }
+.hero .ph-meta { display: flex; gap: 22px; margin-top: 14px; font-family: var(--font-ui); font-size: 12px; flex-wrap: wrap; }
+.hero .ph-meta span { opacity: 0.85; }
+.hero .ph-meta strong { font-weight: 700; display: block; font-size: 16px; opacity: 1; }
+
+.content h2 {
+  font-family: var(--font-ui); font-size: 20px; font-weight: 700;
+  color: var(--brand-blue-deep); margin: 36px 0 14px;
+  padding-bottom: 8px; border-bottom: 2px solid var(--border-soft);
+  display: flex; align-items: center; gap: 10px;
+}
+.content h2 .h2-num {
+  background: var(--brand-accent); color: white;
+  width: 26px; height: 26px; border-radius: 6px;
+  font-size: 13px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700;
+}
+.content h3 { font-family: var(--font-ui); font-size: 16px; font-weight: 600; color: var(--brand-blue-deep); margin: 22px 0 10px; }
+.content p { font-size: 14.5px; line-height: 1.7; margin-bottom: 12px; color: #2a3346; }
+.content ul, .content ol { padding-left: 24px; margin-bottom: 14px; }
+.content li { font-size: 14.5px; line-height: 1.65; margin-bottom: 6px; color: #2a3346; }
+.content strong { font-weight: 700; }
+.content blockquote {
+  background: rgba(74,142,194,0.06); border-left: 4px solid var(--brand-blue);
+  padding: 14px 18px; margin: 16px 0 20px; border-radius: 0 8px 8px 0;
+  font-size: 14px; line-height: 1.6; color: #3a4252;
+}
+
+table.prop-table {
+  width: 100%; border-collapse: collapse;
+  font-family: var(--font-data); font-size: 13.5px;
+  margin: 14px 0 22px; background: white; border-radius: 8px;
+  overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+table.prop-table th, table.prop-table td {
+  padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border-soft);
+}
+table.prop-table th {
+  background: var(--bg-sidebar); color: var(--brand-blue-deep);
+  font-weight: 700; font-size: 12.5px; letter-spacing: 0.3px; text-transform: uppercase;
+}
+table.prop-table tr:last-child td { border-bottom: none; }
+table.prop-table tr:hover td { background: var(--bg-soft); }
+table.prop-table .total-row td { background: var(--bg-soft); font-weight: 700; }
+table.prop-table .total-row td.amount { color: var(--brand-blue-deep); font-size: 15px; }
+
+.tag-yes { color: var(--green); font-weight: 700; }
+.tag-no { color: var(--text-muted); }
+.tag-limited { color: var(--brand-accent); font-weight: 700; }
+.tag-new { color: var(--brand-blue); font-weight: 700; }
+
+.callout {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 22px; margin: 14px 0 18px; display: flex; gap: 14px; align-items: flex-start;
+}
+.callout-icon { font-size: 22px; width: 38px; height: 38px; background: var(--bg-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.callout-body { flex: 1; font-size: 14px; line-height: 1.55; }
+.callout-body strong { color: var(--brand-blue-deep); font-family: var(--font-ui); }
+.callout-body strong:first-child { display: block; margin-bottom: 4px; }
+.callout.warn { border-color: rgba(232,97,26,0.4); }
+.callout.warn .callout-icon { background: rgba(232,97,26,0.12); }
+.callout.warn .callout-body strong { color: var(--brand-accent-dark); }
+.callout.green { border-color: rgba(22,163,74,0.35); }
+.callout.green .callout-icon { background: var(--green-bg); }
+.callout.green .callout-body strong { color: var(--green); }
+.callout.info { border-color: rgba(74,142,194,0.3); }
+.callout.info .callout-icon { background: var(--brand-blue-light); }
+.callout.info .callout-body strong { color: var(--brand-blue-deep); }
+.callout.red { border-color: rgba(220,38,38,0.3); }
+.callout.red .callout-icon { background: var(--red-bg); }
+.callout.red .callout-body strong { color: var(--red); }
+
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin: 16px 0 24px; }
+.pain-card {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; position: relative; overflow: hidden;
+}
+.pain-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--red);
+}
+.pain-card .pain-icon { font-size: 24px; margin-bottom: 8px; }
+.pain-card h4 { font-family: var(--font-ui); font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 6px; }
+.pain-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin: 8px 0 24px; }
+.kpi-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+.kpi-card .kpi-label { font-family: var(--font-ui); font-size: 11px; font-weight: 600; color: var(--text-muted); letter-spacing: 0.6px; text-transform: uppercase; }
+.kpi-card .kpi-value { font-family: var(--font-ui); font-size: 24px; font-weight: 700; color: var(--brand-blue-deep); margin-top: 4px; }
+.kpi-card .kpi-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+.screen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 16px 0 24px; }
+.screen-card {
+  background: white; border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px; transition: box-shadow 0.15s;
+}
+.screen-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.screen-card .screen-icon { font-size: 28px; margin-bottom: 10px; }
+.screen-card h4 { font-family: var(--font-ui); font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 6px; }
+.screen-card p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0; }
+.screen-card .screen-tag {
+  display: inline-block; margin-top: 10px;
+  font-family: var(--font-ui); font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.screen-card .screen-tag.core { background: var(--brand-blue-light); color: var(--brand-blue-deep); }
+.screen-card .screen-tag.ops { background: rgba(232,97,26,0.1); color: var(--brand-accent-dark); }
+.screen-card .screen-tag.report { background: var(--green-bg); color: var(--green); }
+
+.timeline { position: relative; margin: 20px 0 28px; padding-left: 28px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 2px; background: var(--border); }
+.timeline-item { position: relative; margin-bottom: 20px; }
+.timeline-item::before {
+  content: ''; position: absolute; left: -24px; top: 4px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--brand-blue); border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--border);
+}
+.timeline-item.done::before { background: var(--green); }
+.timeline-item.active::before { background: var(--brand-accent); box-shadow: 0 0 0 2px var(--brand-accent), 0 0 0 5px rgba(232,97,26,0.15); }
+.timeline-item h4 { font-family: var(--font-ui); font-size: 14px; font-weight: 700; color: var(--brand-dark); margin-bottom: 4px; }
+.timeline-item .tl-date { font-family: var(--font-data); font-size: 12px; color: var(--brand-accent); font-weight: 600; margin-bottom: 4px; }
+.timeline-item p { font-size: 13.5px; color: var(--text-muted); line-height: 1.5; }
+
+.compare-table { width: 100%; border-collapse: collapse; font-family: var(--font-data); font-size: 13.5px; margin: 14px 0 22px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.compare-table th, .compare-table td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border-soft); }
+.compare-table th { background: var(--bg-sidebar); color: var(--brand-blue-deep); font-weight: 700; font-size: 12.5px; letter-spacing: 0.3px; text-transform: uppercase; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table .col-softr { text-align: center; }
+.compare-table .col-new { text-align: center; }
+.compare-table th.col-softr { background: var(--red-bg); color: var(--red); }
+.compare-table th.col-new { background: var(--green-bg); color: var(--green); }
+
+.schema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0 24px; }
+.schema-card {
+  background: white; border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px 16px; font-family: var(--font-data); font-size: 13px;
+}
+.schema-card h5 {
+  font-family: var(--font-ui); font-size: 12px; font-weight: 700; color: var(--brand-blue-deep);
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.schema-card h5 .tbl-icon { font-size: 14px; }
+.schema-card ul { list-style: none; padding: 0; margin: 0; }
+.schema-card li { padding: 3px 0; color: var(--text-muted); font-size: 12.5px; border-bottom: 1px solid var(--border-soft); }
+.schema-card li:last-child { border-bottom: none; }
+
+.contact-footer { margin-top: 50px; padding: 24px; text-align: center; border-top: 1px solid var(--border); font-family: var(--font-ui); font-size: 13px; color: var(--text-muted); }
+.contact-footer a { color: var(--brand-blue-deep); text-decoration: none; font-weight: 600; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #c1cad9; border-radius: 4px; }
+
+@media (max-width: 700px) {
+  .content { padding: 24px 16px 60px; }
+  .hero { padding: 22px 20px; }
+  .hero h1 { font-size: 20px; }
+  .hero .ph-sub { font-size: 13px; }
+  .pain-grid, .screen-grid, .schema-grid, .kpi-grid { grid-template-columns: 1fr; }
+  .topbar-inner { padding: 10px 14px; gap: 10px; }
+  .topbar .logo-img { height: 26px; }
+  .topbar h1 { font-size: 12px; }
+  .tabs-inner { padding: 0 12px; gap: 0; }
+  .tab-btn { padding: 12px 10px; font-size: 12px; }
+  .compare-table, table.prop-table { font-size: 12px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .compare-table th, .compare-table td,
+  table.prop-table th, table.prop-table td { padding: 8px 10px; white-space: nowrap; }
+  .content h2 { font-size: 17px; }
+  .content h3 { font-size: 14px; }
+  .callout { padding: 14px 16px; gap: 10px; }
+  .callout-icon { width: 32px; height: 32px; font-size: 18px; }
+  .timeline { padding-left: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ TOPBAR ═══════ -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <img src="data:image/jpeg;base64,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" alt="ECOMEK" class="logo-img">
+    <div class="topbar-sep"></div>
+    <h1>Propuesta de Desarrollo</h1>
+    <span class="topbar-meta">Junio 2026</span>
+  </div>
+</div>
+
+<!-- ═══════ TABS ═══════ -->
+<div class="tabs-nav">
+  <div class="tabs-inner">
+    <button class="tab-btn active" onclick="showTab('situacion')">Situaci&oacute;n Actual <span class="tab-tag">6</span></button>
+    <button class="tab-btn" onclick="showTab('plan')">Plan de Acci&oacute;n</button>
+    <button class="tab-btn" onclick="showTab('plataforma')">Plataforma Nueva</button>
+    <button class="tab-btn" onclick="showTab('inversion')">Inversi&oacute;n y Plazos</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 1 — SITUACI&Oacute;N ACTUAL
+     ═══════════════════════════════════════════ -->
+<div id="tab-situacion" class="tab-panel active">
+  <div class="content">
+
+    <div class="hero dark">
+      <span class="ph-tag">Diagn&oacute;stico</span>
+      <h1>Situaci&oacute;n actual de la plataforma</h1>
+      <p class="ph-sub">ECOMEK opera sobre un MVP construido en Softr (plan gratuito) + Softr DB. La plataforma cumple su funci&oacute;n b&aacute;sica pero presenta limitaciones cr&iacute;ticas que impiden escalar el negocio.</p>
+    </div>
+
+    <h2><span class="h2-num">1</span> Dolores actuales</h2>
+    <p>Se identifican seis puntos de fricci&oacute;n que afectan la operaci&oacute;n diaria y la imagen de ECOMEK frente a sus clientes:</p>
+
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-icon">📄</div>
+        <h4>Reportes sin personalizar</h4>
+        <p>El PDF actual es un volcado directo de la pantalla. Sin logo, sin formato profesional, sin selecci&oacute;n de datos. No refleja la calidad del servicio que ECOMEK entrega.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🧱</div>
+        <h4>Bloques y m&oacute;dulos limitados</h4>
+        <p>Softr ofrece un set fijo de componentes. No es posible agregar calendarios, gr&aacute;ficos, indicadores, ni flujos personalizados sin salir del ecosistema.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🎨</div>
+        <h4>Sin identidad de marca</h4>
+        <p>La interfaz luce gen&eacute;rica. No transmite la imagen industrial y profesional de ECOMEK. Los clientes ven una herramienta est&aacute;ndar, no una plataforma propia.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">📊</div>
+        <h4>Sin reporter&iacute;a ni dashboards</h4>
+        <p>No hay panel de control, ni indicadores de gesti&oacute;n, ni gr&aacute;ficos de avance. Toda la informaci&oacute;n es tabular y plana &mdash; no hay visi&oacute;n ejecutiva del negocio.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">👥</div>
+        <h4>L&iacute;mite de usuarios</h4>
+        <p>El plan gratuito impone un tope de usuarios. A medida que ECOMEK suma clientes y t&eacute;cnicos, este l&iacute;mite se convierte en un cuello de botella operacional.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">🔒</div>
+        <h4>Dependencia de proveedor</h4>
+        <p>Toda la plataforma depende de Softr: sus pol&iacute;ticas de precios, sus l&iacute;mites, sus decisiones de producto. ECOMEK no es due&ntilde;o de su propia herramienta.</p>
+      </div>
+    </div>
+
+    <h2><span class="h2-num">2</span> Comparativa: Softr vs. Plataforma propia</h2>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width:40%">Caracter&iacute;stica</th>
+          <th class="col-softr" style="width:30%">Softr (actual)</th>
+          <th class="col-new" style="width:30%">Plataforma propia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Reportes PDF personalizados</td>
+          <td class="col-softr"><span class="tag-no">&#10005; Solo volcado pantalla</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; Dise&ntilde;o libre</span></td>
+        </tr>
+        <tr>
+          <td>Componentes UI (calendarios, gr&aacute;ficos)</td>
+          <td class="col-softr"><span class="tag-no">&#10005; Set fijo</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; Sin l&iacute;mite</span></td>
+        </tr>
+        <tr>
+          <td>Identidad de marca completa</td>
+          <td class="col-softr"><span class="tag-limited">&#9888; Limitada</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; Total</span></td>
+        </tr>
+        <tr>
+          <td>Dashboards e indicadores</td>
+          <td class="col-softr"><span class="tag-no">&#10005; No disponible</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; A medida</span></td>
+        </tr>
+        <tr>
+          <td>Usuarios ilimitados</td>
+          <td class="col-softr"><span class="tag-limited">&#9888; Con costo</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; Sin l&iacute;mite</span></td>
+        </tr>
+        <tr>
+          <td>Propiedad del c&oacute;digo</td>
+          <td class="col-softr"><span class="tag-no">&#10005; De Softr</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; De ECOMEK</span></td>
+        </tr>
+        <tr>
+          <td>Base de datos SQL</td>
+          <td class="col-softr"><span class="tag-no">&#10005; Propietaria</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; PostgreSQL</span></td>
+        </tr>
+        <tr>
+          <td>Integraci&oacute;n Google Calendar</td>
+          <td class="col-softr"><span class="tag-no">&#10005; No disponible</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; Nativa</span></td>
+        </tr>
+        <tr>
+          <td>Notificaciones por correo</td>
+          <td class="col-softr"><span class="tag-no">&#10005; No disponible</span></td>
+          <td class="col-new"><span class="tag-yes">&#10003; Autom&aacute;ticas</span></td>
+        </tr>
+        <tr>
+          <td>Soporte y mantenimiento</td>
+          <td class="col-softr"><span class="tag-yes">&#10003; Incluido</span></td>
+          <td class="col-new"><span class="tag-limited">&#9888; Propio*</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <div class="callout-icon">&#9432;</div>
+      <div class="callout-body">
+        <strong>Sobre el soporte propio</strong>
+        Al migrar a una plataforma propia, ECOMEK asume la responsabilidad del mantenimiento, actualizaciones de seguridad y soporte t&eacute;cnico. Esto se mitiga con una arquitectura moderna, documentaci&oacute;n clara, y un esquema de soporte que se detalla en la secci&oacute;n de Inversi&oacute;n.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 2 — PLAN DE ACCI&Oacute;N
+     ═══════════════════════════════════════════ -->
+<div id="tab-plan" class="tab-panel">
+  <div class="content">
+
+    <div class="hero blue">
+      <span class="ph-tag">Estrategia</span>
+      <h1>Plan de acci&oacute;n en dos frentes</h1>
+      <p class="ph-sub">Resolver lo urgente hoy sin perder de vista lo definitivo. Dos l&iacute;neas de trabajo paralelas que convergen en una plataforma robusta bajo control de ECOMEK.</p>
+    </div>
+
+    <!-- SOLUCION INMEDIATA -->
+    <h2><span class="h2-num">1</span> Soluci&oacute;n inmediata &mdash; Reportes en Softr</h2>
+
+    <div class="callout warn">
+      <div class="callout-icon">&#9889;</div>
+      <div class="callout-body">
+        <strong>Objetivo: reportes profesionales en 1 semana</strong>
+        Pasar al plan pago de Softr ($49 USD/mes) para habilitar la inyecci&oacute;n de c&oacute;digo personalizado. Con esto, se construye un reporte PDF con marca ECOMEK, datos estructurados y dise&ntilde;o profesional &mdash; sin esperar la plataforma nueva.
+      </div>
+    </div>
+
+    <h3>Qu&eacute; se logra</h3>
+    <ul>
+      <li><strong>Reporte PDF con marca:</strong> logo, colores, tipograf&iacute;a ECOMEK en cada documento enviado al cliente</li>
+      <li><strong>Datos estructurados:</strong> selecci&oacute;n de campos relevantes, tablas limpias, im&aacute;genes de inspecci&oacute;n integradas</li>
+      <li><strong>Generaci&oacute;n directa:</strong> bot&oacute;n de descarga desde la misma interfaz actual</li>
+    </ul>
+
+    <h3>Qu&eacute; requiere</h3>
+    <table class="prop-table">
+      <thead><tr><th>&Iacute;tem</th><th>Detalle</th><th>Costo</th></tr></thead>
+      <tbody>
+        <tr><td>Plan Softr (mensual)</td><td>Habilita Custom Code, m&aacute;s usuarios</td><td>$49 USD/mes <span style="font-size:12px;color:var(--text-muted)">(asumido por cliente)</span></td></tr>
+        <tr><td>Desarrollo reporte PDF</td><td>Reporte profesional con imagen de marca, formato limpio, datos seleccionados</td><td>$50.000 CLP</td></tr>
+        <tr class="total-row"><td colspan="2"><strong>Total desarrollo</strong></td><td class="amount">$50.000 CLP</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <div class="callout-icon">&#128338;</div>
+      <div class="callout-body">
+        <strong>Plazo: 3 d&iacute;as h&aacute;biles</strong>
+        A partir de la confirmaci&oacute;n de pago del plan Softr por parte del cliente, el reporte personalizado estar&aacute; operativo en un m&aacute;ximo de 3 d&iacute;as h&aacute;biles.
+      </div>
+    </div>
+
+    <!-- SOLUCION DEFINITIVA -->
+    <h2><span class="h2-num">2</span> Soluci&oacute;n definitiva &mdash; Plataforma ECOMEK</h2>
+
+    <div class="callout green">
+      <div class="callout-icon">&#127919;</div>
+      <div class="callout-body">
+        <strong>Objetivo: plataforma propia, escalable, bajo control de ECOMEK</strong>
+        Migrar desde Softr a un ecosistema de desarrollo est&aacute;ndar: base de datos PostgreSQL, interfaz web moderna, autenticaci&oacute;n propia, y capacidad de personalizar cada aspecto de la experiencia.
+      </div>
+    </div>
+
+    <h3>Arquitectura propuesta</h3>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Base de datos</div>
+        <div class="kpi-value" style="font-size:18px">PostgreSQL</div>
+        <div class="kpi-sub">Supabase (self-hosted)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Frontend</div>
+        <div class="kpi-value" style="font-size:18px">App Web</div>
+        <div class="kpi-sub">Interfaz moderna y responsiva</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Hosting</div>
+        <div class="kpi-value" style="font-size:18px">Hetzner</div>
+        <div class="kpi-sub">VPS ~$7 USD/mes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Autenticaci&oacute;n</div>
+        <div class="kpi-value" style="font-size:18px">Roles</div>
+        <div class="kpi-sub">Admin, t&eacute;cnico, cliente</div>
+      </div>
+    </div>
+
+    <h3>Ventajas clave</h3>
+    <ul>
+      <li><strong>Autonom&iacute;a total:</strong> sin l&iacute;mites de usuarios, bloques, ni funcionalidades. Todo es configurable.</li>
+      <li><strong>Reportes a medida:</strong> PDFs con dise&ntilde;o profesional, datos din&aacute;micos, gr&aacute;ficos e im&aacute;genes.</li>
+      <li><strong>Dashboards:</strong> paneles de control con m&eacute;tricas del negocio en tiempo real.</li>
+      <li><strong>Identidad de marca:</strong> interfaz 100% ECOMEK &mdash; colores, logo, tipograf&iacute;a, tono.</li>
+      <li><strong>Escalabilidad:</strong> la misma infraestructura sirve para 10 o 10.000 clientes.</li>
+      <li><strong>Propiedad:</strong> c&oacute;digo, datos y dise&ntilde;o son propiedad de ECOMEK.</li>
+    </ul>
+
+    <h3>Integraciones</h3>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Correo electr&oacute;nico</div>
+        <div class="kpi-value" style="font-size:16px">&#9993; Notificaciones</div>
+        <div class="kpi-sub">Aprobar reporte &rarr; env&iacute;o autom&aacute;tico al cliente con PDF adjunto</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Google Calendar</div>
+        <div class="kpi-value" style="font-size:16px">&#128197; Agenda sync</div>
+        <div class="kpi-sub">Inscripciones en agenda env&iacute;an invitaciones a personas involucradas</div>
+      </div>
+    </div>
+
+    <h3>Estrategia de migraci&oacute;n de datos</h3>
+    <div class="callout info">
+      <div class="callout-icon">&#128451;</div>
+      <div class="callout-body">
+        <strong>Migraci&oacute;n en dos fases</strong>
+        <ol style="margin-top:8px; margin-bottom:0;">
+          <li style="margin-bottom:6px"><strong>Fase de desarrollo:</strong> se trabaja con datos de prueba (dummy) para poblar y probar cada funci&oacute;n de la plataforma de forma controlada.</li>
+          <li><strong>Fase de migraci&oacute;n:</strong> una vez aprobados los testeos, se procede a migrar la totalidad de los datos desde Softr DB mediante un proceso ETL (extracci&oacute;n, transformaci&oacute;n y carga) en bloque.</li>
+        </ol>
+      </div>
+    </div>
+
+    <h3>Consideraciones</h3>
+    <div class="callout warn">
+      <div class="callout-icon">&#9888;</div>
+      <div class="callout-body">
+        <strong>Responsabilidades que se asumen</strong>
+        Al dejar Softr, ECOMEK se hace cargo del mantenimiento de la plataforma: actualizaciones de seguridad, backups, y soporte t&eacute;cnico. Esto se gestiona con:
+        <ul style="margin-top:8px; margin-bottom:0;">
+          <li>Backups autom&aacute;ticos diarios de la base de datos</li>
+          <li>Infraestructura en proveedor confiable (Hetzner, datacenter europeo)</li>
+          <li>Esquema de soporte mensual (detallado en la secci&oacute;n Inversi&oacute;n)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 3 — PLATAFORMA NUEVA
+     ═══════════════════════════════════════════ -->
+<div id="tab-plataforma" class="tab-panel">
+  <div class="content">
+
+    <div class="hero accent">
+      <span class="ph-tag">Plataforma</span>
+      <h1>Dise&ntilde;o de la nueva plataforma</h1>
+      <p class="ph-sub">Pantallas, modelo de datos e integraciones de la plataforma ECOMEK. Cada componente est&aacute; pensado para reflejar la operaci&oacute;n real del negocio.</p>
+    </div>
+
+    <!-- PANTALLAS -->
+    <h2><span class="h2-num">1</span> Pantallas</h2>
+    <p>La plataforma se organiza en 8 pantallas principales:</p>
+
+    <div class="screen-grid">
+      <div class="screen-card">
+        <div class="screen-icon">🏠</div>
+        <h4>Inicio / Panel de control</h4>
+        <p>Vista ejecutiva con KPIs, actividad reciente, alertas y accesos r&aacute;pidos. Dashboards con gr&aacute;ficos de estado de proyectos, inspecciones pendientes y flujo de caja.</p>
+        <span class="screen-tag core">Core</span>
+      </div>
+      <div class="screen-card">
+        <div class="screen-icon">🏢</div>
+        <h4>Clientes</h4>
+        <p>Listado y ficha de cada cliente. Datos de contacto, proyectos asociados, historial de servicios, documentos y estado de la relaci&oacute;n comercial.</p>
+        <span class="screen-tag core">Core</span>
+      </div>
+      <div class="screen-card">
+        <div class="screen-icon">📁</div>
+        <h4>Proyectos y subproyectos</h4>
+        <p>Gesti&oacute;n jer&aacute;rquica de trabajos. Un proyecto agrupa m&uacute;ltiples subproyectos (equipos, &aacute;reas, etc.). Estado, responsables, fechas y vinculaci&oacute;n a inspecciones.</p>
+        <span class="screen-tag ops">Operaciones</span>
+      </div>
+      <div class="screen-card">
+        <div class="screen-icon">📅</div>
+        <h4>Agenda</h4>
+        <p>Calendario de inspecciones, mantenciones y visitas programadas. Vista semanal/mensual con asignaci&oacute;n de t&eacute;cnicos. Sincronizaci&oacute;n con Google Calendar e invitaciones autom&aacute;ticas.</p>
+        <span class="screen-tag ops">Operaciones</span>
+      </div>
+      <div class="screen-card">
+        <div class="screen-icon">🔍</div>
+        <h4>Formulario de inspecci&oacute;n</h4>
+        <p>Registro estructurado de inspecciones en terreno. Campos din&aacute;micos seg&uacute;n tipo de equipo, carga de im&aacute;genes, observaciones y firma del t&eacute;cnico.</p>
+        <span class="screen-tag ops">Operaciones</span>
+      </div>
+      <div class="screen-card">
+        <div class="screen-icon">📄</div>
+        <h4>Reportes</h4>
+        <p>Generaci&oacute;n de reportes PDF profesionales con marca ECOMEK. Al aprobar un reporte, se env&iacute;a autom&aacute;ticamente por correo al cliente con el PDF adjunto.</p>
+        <span class="screen-tag report">Reportes</span>
+      </div>
+      <div class="screen-card">
+        <div class="screen-icon">📊</div>
+        <h4>Dashboards</h4>
+        <p>M&eacute;tricas del negocio: servicios por mes, clientes activos, ingresos, inspecciones completadas. Gr&aacute;ficos interactivos y filtros por per&iacute;odo, cliente o tipo de servicio.</p>
+        <span class="screen-tag report">Reportes</span>
+      </div>
+      <div class="screen-card">
+        <div class="screen-icon">🔐</div>
+        <h4>Autenticaci&oacute;n</h4>
+        <p>Login, registro y gesti&oacute;n de sesiones. Roles diferenciados: administrador ECOMEK, t&eacute;cnico, y cliente (vista limitada a sus propios proyectos y reportes).</p>
+        <span class="screen-tag core">Core</span>
+      </div>
+    </div>
+
+    <!-- MODELO DE DATOS -->
+    <h2><span class="h2-num">2</span> Modelo de datos</h2>
+    <p>Base de datos PostgreSQL con 12 tablas. Dise&ntilde;o normalizado con seguridad a nivel de fila (RLS) para que cada usuario solo vea la informaci&oacute;n que le corresponde.</p>
+
+    <div class="schema-grid">
+      <div class="schema-card">
+        <h5><span class="tbl-icon">👤</span> personas</h5>
+        <ul>
+          <li>nombre, email, tel&eacute;fono</li>
+          <li>rol asignado</li>
+          <li>estado activo/inactivo</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">🏷️</span> roles</h5>
+        <ul>
+          <li>admin, t&eacute;cnico, cliente</li>
+          <li>permisos por rol</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">🏢</span> clientes</h5>
+        <ul>
+          <li>raz&oacute;n social, RUT</li>
+          <li>direcci&oacute;n, tel&eacute;fono</li>
+          <li>contacto principal</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">🔗</span> personas_clientes</h5>
+        <ul>
+          <li>vincula personas a empresas</li>
+          <li>cargo, es contacto</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">📁</span> proyectos</h5>
+        <ul>
+          <li>asociado a un cliente</li>
+          <li>nombre, estado, fechas</li>
+          <li>descripci&oacute;n</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">📂</span> sub_proyectos</h5>
+        <ul>
+          <li>asociado a un proyecto</li>
+          <li>nombre, ubicaci&oacute;n</li>
+          <li>estado</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">🔍</span> inspecciones</h5>
+        <ul>
+          <li>asociada a subproyecto</li>
+          <li>t&eacute;cnico asignado</li>
+          <li>fecha, tipo de equipo</li>
+          <li>datos, im&aacute;genes, observaciones</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">🛠️</span> servicios</h5>
+        <ul>
+          <li>asociado a cliente/proyecto</li>
+          <li>tipo, descripci&oacute;n</li>
+          <li>fecha, valor, estado</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">📬</span> formulario_contacto</h5>
+        <ul>
+          <li>nombre, email, tel&eacute;fono</li>
+          <li>mensaje, origen</li>
+          <li>estado de atenci&oacute;n</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">💰</span> flujo_caja</h5>
+        <ul>
+          <li>ingresos y egresos</li>
+          <li>monto, fecha, categor&iacute;a</li>
+          <li>asociado a cliente/servicio</li>
+          <li>comprobante</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">🚚</span> proveedores</h5>
+        <ul>
+          <li>raz&oacute;n social, RUT</li>
+          <li>rubro, contacto</li>
+          <li>tel&eacute;fono, email</li>
+        </ul>
+      </div>
+      <div class="schema-card">
+        <h5><span class="tbl-icon">📅</span> agenda</h5>
+        <ul>
+          <li>asociada a proyecto/t&eacute;cnico</li>
+          <li>t&iacute;tulo, fechas</li>
+          <li>tipo, estado</li>
+          <li>sync Google Calendar</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- INTEGRACIONES -->
+    <h2><span class="h2-num">3</span> Integraciones</h2>
+
+    <div class="callout green">
+      <div class="callout-icon">&#9993;</div>
+      <div class="callout-body">
+        <strong>Correo electr&oacute;nico</strong>
+        <ul style="margin-top:8px; margin-bottom:0;">
+          <li>Aprobaci&oacute;n de reporte gatilla env&iacute;o autom&aacute;tico de correo al cliente con PDF adjunto</li>
+          <li>Notificaciones de nuevas inspecciones, cambios de estado de proyecto, etc.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout green">
+      <div class="callout-icon">&#128197;</div>
+      <div class="callout-body">
+        <strong>Google Calendar</strong>
+        <ul style="margin-top:8px; margin-bottom:0;">
+          <li>Inscripciones en agenda crean eventos en Google Calendar de forma autom&aacute;tica</li>
+          <li>Invitaciones enviadas a t&eacute;cnicos y personas involucradas</li>
+          <li>Sincronizaci&oacute;n bidireccional de fechas y estados</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     TAB 4 — INVERSI&Oacute;N Y PLAZOS
+     ═══════════════════════════════════════════ -->
+<div id="tab-inversion" class="tab-panel">
+  <div class="content">
+
+    <div class="hero green">
+      <span class="ph-tag">Inversi&oacute;n</span>
+      <h1>Inversi&oacute;n y plazos</h1>
+      <p class="ph-sub">Desglose de costos para ambas l&iacute;neas de trabajo. Valores en pesos chilenos (CLP), bruto.</p>
+    </div>
+
+    <!-- INMEDIATA -->
+    <h2><span class="h2-num">1</span> Soluci&oacute;n inmediata &mdash; Reportes Softr</h2>
+
+    <table class="prop-table">
+      <thead><tr><th>&Iacute;tem</th><th>Tipo</th><th>Valor</th></tr></thead>
+      <tbody>
+        <tr><td>Plan Softr</td><td>Recurrente / mes</td><td>$49 USD/mes <span style="font-size:12px;color:var(--text-muted)">(asumido por cliente)</span></td></tr>
+        <tr><td>Desarrollo reporte PDF personalizado</td><td>&Uacute;nico</td><td>$50.000</td></tr>
+        <tr class="total-row"><td colspan="2"><strong>Total desarrollo (sol. inmediata)</strong></td><td class="amount">$50.000</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <div class="callout-icon">&#128338;</div>
+      <div class="callout-body">
+        <strong>Plazo: 3 d&iacute;as h&aacute;biles</strong> a partir de la confirmaci&oacute;n de pago del plan Softr.
+      </div>
+    </div>
+
+    <!-- DEFINITIVA -->
+    <h2><span class="h2-num">2</span> Soluci&oacute;n definitiva &mdash; Plataforma ECOMEK</h2>
+
+    <h3>Costos de desarrollo</h3>
+    <table class="prop-table">
+      <thead><tr><th>Etapa</th><th>Descripci&oacute;n</th><th>Plazo</th><th>Valor</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="white-space:nowrap"><strong>Etapa 1</strong></td>
+          <td>Infraestructura, modelo de datos, autenticaci&oacute;n, gesti&oacute;n de clientes y proyectos</td>
+          <td>10 d&iacute;as h&aacute;biles</td>
+          <td>$200.000</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap"><strong>Etapa 2</strong></td>
+          <td>Inspecciones, agenda con sync Google Calendar, formulario din&aacute;mico, carga de im&aacute;genes</td>
+          <td>15 d&iacute;as h&aacute;biles</td>
+          <td>$250.000</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap"><strong>Etapa 3</strong></td>
+          <td>Reportes PDF profesionales, dashboards, gr&aacute;ficos, integraci&oacute;n correo (aprobaci&oacute;n &rarr; env&iacute;o autom&aacute;tico al cliente)</td>
+          <td>15 d&iacute;as h&aacute;biles</td>
+          <td>$250.000</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap"><strong>Etapa 4</strong></td>
+          <td>Migraci&oacute;n de datos (ETL desde Softr DB), pruebas integrales, capacitaci&oacute;n, puesta en marcha</td>
+          <td>10 d&iacute;as h&aacute;biles</td>
+          <td>$150.000</td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="3"><strong>Total desarrollo (sol. definitiva)</strong></td>
+          <td class="amount">$850.000</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <div class="callout-icon">&#128451;</div>
+      <div class="callout-body">
+        <strong>Estrategia de datos</strong>
+        Durante las etapas 1 a 3 se trabajar&aacute; con datos de prueba para poblar y validar cada funci&oacute;n. Reci&eacute;n cuando los testeos sean aprobados por ECOMEK, se proceder&aacute; en la Etapa 4 a migrar la totalidad de los datos reales desde Softr DB mediante proceso ETL (extracci&oacute;n, transformaci&oacute;n y carga en bloque).
+      </div>
+    </div>
+
+    <h3>Costos recurrentes (infraestructura)</h3>
+    <table class="prop-table">
+      <thead><tr><th>&Iacute;tem</th><th>Detalle</th><th>Valor mensual</th></tr></thead>
+      <tbody>
+        <tr><td>Servidor Hetzner (VPS)</td><td>Base de datos + frontend + backups autom&aacute;ticos</td><td>~$7 USD (~$6.500 CLP)</td></tr>
+        <tr><td>Dominio (anual prorrateado)</td><td>plataforma.ecomek.cl o similar</td><td>~$1.000 CLP</td></tr>
+        <tr class="total-row"><td colspan="2"><strong>Total infraestructura mensual</strong></td><td class="amount">~$7.500 CLP</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout green">
+      <div class="callout-icon">&#128178;</div>
+      <div class="callout-body">
+        <strong>Comparaci&oacute;n de costo operativo</strong>
+        La infraestructura propia cuesta ~$7.500 CLP/mes &mdash; una fracci&oacute;n del plan Softr ($49 USD/mes). Al migrar a la plataforma definitiva, el plan de Softr se puede dar de baja, reduciendo el costo operativo mensual.
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <h2><span class="h2-num">3</span> Cronograma</h2>
+
+    <div class="timeline">
+      <div class="timeline-item active">
+        <div class="tl-date">3 d&iacute;as h&aacute;biles</div>
+        <h4>Soluci&oacute;n inmediata (Softr)</h4>
+        <p>Upgrade plan + desarrollo reporte PDF personalizado. Operativo para clientes.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-date">Etapa 1 &mdash; 10 d&iacute;as h&aacute;biles</div>
+        <h4>Base de la plataforma</h4>
+        <p>Servidor, base de datos, autenticaci&oacute;n, gesti&oacute;n de clientes y proyectos. Datos de prueba.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-date">Etapa 2 &mdash; 15 d&iacute;as h&aacute;biles</div>
+        <h4>Operaciones</h4>
+        <p>Formulario de inspecci&oacute;n, agenda con Google Calendar, subproyectos, carga de im&aacute;genes.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-date">Etapa 3 &mdash; 15 d&iacute;as h&aacute;biles</div>
+        <h4>Reportes y dashboards</h4>
+        <p>PDF profesionales, dashboard de inicio, gr&aacute;ficos, integraci&oacute;n correo autom&aacute;tico.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-date">Etapa 4 &mdash; 10 d&iacute;as h&aacute;biles</div>
+        <h4>Migraci&oacute;n y cierre</h4>
+        <p>Migraci&oacute;n ETL desde Softr DB, pruebas integrales, capacitaci&oacute;n al equipo, go-live.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <div class="callout-icon">&#128197;</div>
+      <div class="callout-body">
+        <strong>Plazo total estimado: ~50 d&iacute;as h&aacute;biles (~10 semanas)</strong>
+        Los plazos pueden ajustarse seg&uacute;n disponibilidad y prioridades del equipo. Cada etapa incluye revisi&oacute;n y aprobaci&oacute;n por parte de ECOMEK antes de avanzar a la siguiente.
+      </div>
+    </div>
+
+    <!-- SOPORTE -->
+    <h2><span class="h2-num">4</span> Soporte post-lanzamiento</h2>
+
+    <table class="prop-table">
+      <thead><tr><th>Concepto</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td>Mantenimiento</td><td>Actualizaciones de seguridad, backups, correcciones y ajustes menores</td></tr>
+        <tr><td>Desarrollo adicional</td><td>Nuevas funcionalidades fuera del alcance original, cotizadas por separado</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <div class="callout-icon">&#128101;</div>
+      <div class="callout-body">
+        <strong>Equipo de desarrollo</strong>
+        Javier Laborde (desarrollo full-stack y arquitectura) + Felipe Garc&iacute;a (desarrollo). Comunicaci&oacute;n directa, iteraciones r&aacute;pidas, sin intermediarios.
+      </div>
+    </div>
+
+    <!-- RESUMEN -->
+    <h2><span class="h2-num">5</span> Resumen de inversi&oacute;n</h2>
+
+    <table class="prop-table">
+      <thead><tr><th>Concepto</th><th>Tipo</th><th>Valor</th></tr></thead>
+      <tbody>
+        <tr><td>Reporte PDF (sol. inmediata)</td><td>&Uacute;nico</td><td>$50.000</td></tr>
+        <tr><td>Plataforma ECOMEK (sol. definitiva)</td><td>&Uacute;nico</td><td>$850.000</td></tr>
+        <tr><td>Infraestructura (hosting + dominio)</td><td>Mensual</td><td>~$7.500/mes</td></tr>
+        <tr><td>Plan Softr (transitorio)</td><td>Mensual</td><td>$49 USD/mes <span style="font-size:12px;color:var(--text-muted)">(asumido por cliente)</span></td></tr>
+        <tr class="total-row"><td colspan="2"><strong>Total inversi&oacute;n desarrollo</strong></td><td class="amount">$900.000</td></tr>
+      </tbody>
+    </table>
+
+    <blockquote>
+      Todos los valores expresados en CLP bruto. El plan Softr ($49 USD/mes) es transitorio y se da de baja al migrar a la plataforma definitiva. La infraestructura mensual (~$7.500 CLP) es el &uacute;nico costo recurrente a largo plazo.
+    </blockquote>
+
+  </div>
+</div>
+
+<!-- ═══════ FOOTER ═══════ -->
+<div class="contact-footer">
+  <p><strong>Propuesta preparada por</strong> Javier Laborde &amp; Felipe Garc&iacute;a &mdash; Junio 2026</p>
+  <p style="margin-top:6px">Contacto: <a href="mailto:hola@javierlaborde.com">hola@javierlaborde.com</a></p>
+</div>
+
+<!-- ═══════ JS ═══════ -->
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
